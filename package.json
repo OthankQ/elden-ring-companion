@@ -1,0 +1,16 @@
+{
+  "name": "elden-ring-app",
+  "version": "1.0.0",
+  "description": "Elden Ring companion app.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryan Kim",
+  "license": "ISC",
+  "type": "module",
+  "module": "commonjs",
+  "dependencies": {
+    "axios": "^0.26.1"
+  }
+}
