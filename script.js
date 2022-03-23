@@ -59,12 +59,11 @@ const createImageList = (data) => {
 }
 
 const getData = (dataType) => {
-  const URL = `https://eldenring.fanapis.com/api/${dataType}`;
+  const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=100`;
 
   receivedData = fetch(URL)
     .then(res => res.json())
     .then(data => receivedData = data.data)
-    .then(() => console.log(receivedData))
     .then(() => receivedData.forEach(data => createImageList(data)))
     .then(err => console.log(err))
 }
