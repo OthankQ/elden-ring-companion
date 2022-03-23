@@ -1,5 +1,5 @@
-img {
-  width: 100px;
+h1 {
+  text-align: center;
 }
 
 .container {
@@ -42,6 +42,16 @@ input[type="text"] {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: 0.1s;
+}
+
+.card img {
+  width: 100px;
+}
+
+.card:hover {
+  transform: scale(1.1);
+  cursor: pointer;
 }
 
 .card p {
