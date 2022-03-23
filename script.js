@@ -1,7 +1,7 @@
 const shieldsButton = document.querySelector('#shieldsButton');
 const weaponsButton = document.querySelector('#weaponsButton');
 const npcsButton = document.querySelector('#npcsButton');
-
+const locationsButton = document.querySelector('#locationsButton');
 const cardList = document.querySelector('.card-list')
 
 let receivedData;
@@ -20,6 +20,11 @@ const getWeapons = () => {
 const getNpcs = () => {
   cardList.innerHTML = "";
   getData('npcs');
+}
+
+const getLocations = () => {
+  cardList.innerHTML = "";
+  getData('locations');
 }
 
 const createImageList = (data) => {
@@ -48,6 +53,8 @@ const getData = (dataType) => {
 shieldsButton.addEventListener('click', getShields);
 weaponsButton.addEventListener('click', getWeapons);
 npcsButton.addEventListener('click', getNpcs);
+locationsButton.addEventListener('click', getLocations);
+
 
 
 
