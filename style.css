@@ -46,7 +46,7 @@ input[type="text"] {
 }
 
 .card img {
-  width: 100px;
+  width: 100%;
 }
 
 .card:hover {

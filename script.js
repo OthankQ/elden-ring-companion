@@ -56,6 +56,9 @@ const createImageList = (data) => {
   card.appendChild(img);
   card.appendChild(title);
   document.querySelector('.card-list').appendChild(card);
+  card.addEventListener('click', (e) => {
+    console.log(e.target);
+  })
 }
 
 const getData = (dataType) => {
