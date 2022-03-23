@@ -2,7 +2,8 @@ const shieldsButton = document.querySelector('#shieldsButton');
 const weaponsButton = document.querySelector('#weaponsButton');
 const npcsButton = document.querySelector('#npcsButton');
 const locationsButton = document.querySelector('#locationsButton');
-const cardList = document.querySelector('.card-list')
+const searchBar = document.querySelector('#searchbar');
+const cardList = document.querySelector('.card-list');
 
 let receivedData;
 
@@ -27,6 +28,24 @@ const getLocations = () => {
   getData('locations');
 }
 
+const sortAlphabeticallyByName = (a, b) => {
+  if (a.name < b.name) {
+    return -1;
+  }
+  if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
+}
+
+const filterContent = (e) => {
+  cardList.innerHTML = "";
+  let filteredData = receivedData.filter(data => {
+    return data.name.toLowerCase().includes(e.target.value)
+  });
+  filteredData.forEach(data => createImageList(data));
+}
+
 const createImageList = (data) => {
   let card = document.createElement('div');
   card.classList.add('card');
@@ -40,7 +59,7 @@ const createImageList = (data) => {
 }
 
 const getData = (dataType) => {
-  const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=100`;
+  const URL = `https://eldenring.fanapis.com/api/${dataType}`;
 
   receivedData = fetch(URL)
     .then(res => res.json())
@@ -54,6 +73,7 @@ shieldsButton.addEventListener('click', getShields);
 weaponsButton.addEventListener('click', getWeapons);
 npcsButton.addEventListener('click', getNpcs);
 locationsButton.addEventListener('click', getLocations);
+searchBar.addEventListener('input', filterContent);
 
 
 
