@@ -104,10 +104,6 @@ const fetchSingleItemData = (name) => {
     .then(err => console.log(err))
 }
 
-const renderDetailedData = () => {
-
-}
-
 shieldsButton.addEventListener('click', e => {
   updateCardList(e.target.dataset.type);
 });
