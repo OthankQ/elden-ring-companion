@@ -19,7 +19,7 @@ async function requestAllData(dataType) {
   receivedData = [];
   for (let i = 1; i < 20; i ++) {
     const URL = `https://eldenring.fanapis.com/api/${dataType}?page=${i}`;
-    let loader = `<h1>Loading...</h1>`;
+    let loader = `<div class="loader"><h1>Loading...</h1></div>`;
     cardList.innerHTML = loader;
     await fetch(URL)
     .then(res => res.json())
