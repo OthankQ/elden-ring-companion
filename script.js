@@ -15,6 +15,23 @@ let currentDataType;
 let singleData;
 let activePageNumber;
 
+async function requestAllData(dataType) {
+  receivedData = [];
+  for (let i = 1; i < 20; i ++) {
+    const URL = `https://eldenring.fanapis.com/api/${dataType}?page=${i}`;
+    await fetch(URL)
+    .then(res => res.json())
+    .then(data => {
+      if (data.data.length !== 0) {
+        receivedData.push(...data.data);
+      }
+    })
+  }
+  // Exclude armor items that have '(altered)' in the name
+  receivedData = receivedData.filter(data => !data.name.includes('(altered)'));
+  receivedData.forEach(data => createCardList(data));
+}
+
 // Update receivedData array when item type buttons are clicked.
 const updateCardList = (dataType) => {
   cardList.innerHTML = "";
@@ -78,23 +95,6 @@ const createCardList = (data) => {
   document.querySelector('.card-list').appendChild(card);
 }
 
-async function requestAllData(dataType) {
-  receivedData = [];
-  for (let i = 1; i < 20; i ++) {
-    const URL = `https://eldenring.fanapis.com/api/${dataType}?page=${i}`;
-    await fetch(URL)
-    .then(res => res.json())
-    .then(data => {
-      if (data.data.length !== 0) {
-        receivedData.push(...data.data);
-      }
-    })
-  }
-  // Exclude armor items that have '(altered)' in the name
-  receivedData = receivedData.filter(data => !data.name.includes('(altered)'));
-  receivedData.forEach(data => createCardList(data));
-}
-
 // Fetch single item data when a card is clicked.
 const fetchSingleItemData = (name) => {
   const URL = `https://eldenring.fanapis.com/api/${currentDataType}?name=${name}`;
@@ -121,6 +121,10 @@ npcsButton.addEventListener('click', e => {
 });
 
 locationsButton.addEventListener('click', e => {
+  updateCardList(e.target.dataset.type);
+});
+
+ashesOfWarButton.addEventListener('click', e => {
   updateCardList(e.target.dataset.type);
 });
 
