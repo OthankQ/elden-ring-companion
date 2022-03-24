@@ -4,9 +4,18 @@ h1 {
 
 .container {
   padding: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 20px auto;
+}
+
+.sort-button-wrapper {
   display: flex;
   justify-content: center;
   gap: 30px;
@@ -59,7 +68,13 @@ input[type="text"] {
 }
 
 .page-list {
+  margin: 50px;
   display: flex;
   list-style: none;
   gap: 30px;
+  justify-content: center;
+}
+
+li:hover {
+  cursor: pointer;
 }

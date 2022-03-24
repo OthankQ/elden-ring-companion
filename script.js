@@ -1,23 +1,25 @@
 const shieldsButton = document.querySelector('#shieldsButton');
 const weaponsButton = document.querySelector('#weaponsButton');
+const armorsButton = document.querySelector('#armorsButton');
 const npcsButton = document.querySelector('#npcsButton');
 const locationsButton = document.querySelector('#locationsButton');
 const ashesOfWarButton = document.querySelector('#ashesOfWarButton');
+const alphabeticalSortButton = document.querySelector('#alphabetical');
+const strengthSortButton = document.querySelector('#requiredStrength');
 const searchBar = document.querySelector('#searchbar');
 const cardList = document.querySelector('.card-list');
 const pageList = document.querySelector('.page-list');
 
-let receivedData;
+let receivedData = [];
 let currentDataType;
 let singleData;
+let activePageNumber;
 
 // Update receivedData array when item type buttons are clicked.
-const updateReceivedData = (dataType, pageNumber=1) => {
+const updateCardList = (dataType) => {
   cardList.innerHTML = "";
-  console.log(dataType);
   currentDataType = dataType;
-  requestData(dataType, pageNumber);
-  createPagination(dataType);
+  requestAllData(dataType);
 }
 
 const sortAlphabeticallyByName = (a, b) => {
@@ -25,6 +27,26 @@ const sortAlphabeticallyByName = (a, b) => {
     return -1;
   }
   if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
+}
+
+const sortByRequiredStrength = (a, b) => {
+  if (a.requiredAttributes[0].amount < b.requiredAttributes[0].amount) {
+    return -1;
+  }
+  if (a.requiredAttributes[0].amount > b.requiredAttributes[0].amount) {
+    return 1;
+  }
+  return 0;
+}
+
+const sortByRequiredDexterity = (a, b) => {
+  if (a.requiredAttributes[0].amount < b.requiredAttributes[0].amount) {
+    return -1;
+  }
+  if (a.requiredAttributes[0].amount > b.requiredAttributes[0].amount) {
     return 1;
   }
   return 0;
@@ -56,35 +78,21 @@ const createCardList = (data) => {
   document.querySelector('.card-list').appendChild(card);
 }
 
-const requestData = (dataType, pageNumber) => {
-  const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=50&page=${pageNumber}`;
-  console.log(URL);
-  fetch(URL)
-    .then(res => res.json())
-    .then(data => receivedData = data.data)
-    .then(() => receivedData.forEach(data => createCardList(data)))
-    .then(err => console.log(err))
-}
-
-const createPagination = (dataType) => {
-  pageList.innerHTML = ""
-  for (let i = 1; i < 10; i ++) {
-    const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=50&page=${i}`;
-    fetch(URL)
+async function requestAllData(dataType) {
+  receivedData = [];
+  for (let i = 1; i < 20; i ++) {
+    const URL = `https://eldenring.fanapis.com/api/${dataType}?page=${i}`;
+    await fetch(URL)
     .then(res => res.json())
     .then(data => {
       if (data.data.length !== 0) {
-        let pageLinkListItem = document.createElement('li');
-        let pageLink = document.createElement('a');
-        pageLink.innerText = i;
-        pageLink.addEventListener('click', e => {
-          updateReceivedData(dataType, Number(e.target.innerText));
-        })
-        pageLinkListItem.appendChild(pageLink);
-        pageList.appendChild(pageLinkListItem);
+        receivedData.push(...data.data);
       }
     })
   }
+  // Exclude armor items that have '(altered)' in the name
+  receivedData = receivedData.filter(data => !data.name.includes('(altered)'));
+  receivedData.forEach(data => createCardList(data));
 }
 
 // Fetch single item data when a card is clicked.
@@ -101,25 +109,36 @@ const renderDetailedData = () => {
 }
 
 shieldsButton.addEventListener('click', e => {
-  updateReceivedData(e.target.dataset.type);
+  updateCardList(e.target.dataset.type);
 });
 
 weaponsButton.addEventListener('click', e => {
-  updateReceivedData(e.target.dataset.type);
+  updateCardList(e.target.dataset.type);
+});
+
+armorsButton.addEventListener('click', e => {
+  updateCardList(e.target.dataset.type);
 });
 
 npcsButton.addEventListener('click', e => {
-  updateReceivedData(e.target.dataset.type);
+  updateCardList(e.target.dataset.type);
 });
 
 locationsButton.addEventListener('click', e => {
-  updateReceivedData(e.target.dataset.type);
+  updateCardList(e.target.dataset.type);
 });
 
-// ashesOfWarButton.addEventListener('click', e => {
-//   updateReceivedData(e.target.dataset.type);
-// });
+alphabeticalSortButton.addEventListener('click', () => {
+  cardList.innerHTML = "";
+  let sortedData = receivedData.sort(sortAlphabeticallyByName);
+  sortedData.forEach(data => createCardList(data));
+})
 
+strengthSortButton.addEventListener('click', () => {
+  cardList.innerHTML = "";
+  let sortedData = receivedData.sort(sortByRequiredStrength);
+  sortedData.forEach(data => createCardList(data));
+})
 
 searchBar.addEventListener('input', filterContent);
 
