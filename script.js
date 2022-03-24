@@ -2,30 +2,22 @@ const shieldsButton = document.querySelector('#shieldsButton');
 const weaponsButton = document.querySelector('#weaponsButton');
 const npcsButton = document.querySelector('#npcsButton');
 const locationsButton = document.querySelector('#locationsButton');
+const ashesOfWarButton = document.querySelector('#ashesOfWarButton');
 const searchBar = document.querySelector('#searchbar');
 const cardList = document.querySelector('.card-list');
+const pageList = document.querySelector('.page-list');
 
 let receivedData;
+let currentDataType;
+let singleData;
 
-// Retrieve shield data and store it in an array
-const getShields = () => {
+// Update receivedData array when item type buttons are clicked.
+const updateReceivedData = (dataType, pageNumber=1) => {
   cardList.innerHTML = "";
-  getData('shields');
-}
-
-const getWeapons = () => {
-  cardList.innerHTML = "";
-  getData('weapons');
-}
-
-const getNpcs = () => {
-  cardList.innerHTML = "";
-  getData('npcs');
-}
-
-const getLocations = () => {
-  cardList.innerHTML = "";
-  getData('locations');
+  console.log(dataType);
+  currentDataType = dataType;
+  requestData(dataType, pageNumber);
+  createPagination(dataType);
 }
 
 const sortAlphabeticallyByName = (a, b) => {
@@ -41,40 +33,94 @@ const sortAlphabeticallyByName = (a, b) => {
 const filterContent = (e) => {
   cardList.innerHTML = "";
   let filteredData = receivedData.filter(data => {
-    return data.name.toLowerCase().includes(e.target.value)
+    return data.name.toLowerCase().includes(e.target.value.toLowerCase())
   });
-  filteredData.forEach(data => createImageList(data));
+  filteredData.forEach(data => createCardList(data));
 }
 
-const createImageList = (data) => {
+const createCardList = (data) => {
   let card = document.createElement('div');
-  card.classList.add('card');
-  let img = document.createElement('img');
-  img.src = data.image;
   let title = document.createElement('p');
+  let img = document.createElement('img');
+  card.classList.add('card');
+  img.src = data.image;
+  img.id = data.name;
   title.innerHTML = data.name;
+  title.id = data.name;
+  card.id = data.name;
   card.appendChild(img);
   card.appendChild(title);
-  document.querySelector('.card-list').appendChild(card);
-  card.addEventListener('click', (e) => {
-    console.log(e.target);
+  card.addEventListener('click', e => {
+    fetchSingleItemData(String(e.target.id));
   })
+  document.querySelector('.card-list').appendChild(card);
 }
 
-const getData = (dataType) => {
-  const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=100`;
-
-  receivedData = fetch(URL)
+const requestData = (dataType, pageNumber) => {
+  const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=50&page=${pageNumber}`;
+  console.log(URL);
+  fetch(URL)
     .then(res => res.json())
     .then(data => receivedData = data.data)
-    .then(() => receivedData.forEach(data => createImageList(data)))
+    .then(() => receivedData.forEach(data => createCardList(data)))
     .then(err => console.log(err))
 }
 
-shieldsButton.addEventListener('click', getShields);
-weaponsButton.addEventListener('click', getWeapons);
-npcsButton.addEventListener('click', getNpcs);
-locationsButton.addEventListener('click', getLocations);
+const createPagination = (dataType) => {
+  pageList.innerHTML = ""
+  for (let i = 1; i < 10; i ++) {
+    const URL = `https://eldenring.fanapis.com/api/${dataType}?limit=50&page=${i}`;
+    fetch(URL)
+    .then(res => res.json())
+    .then(data => {
+      if (data.data.length !== 0) {
+        let pageLinkListItem = document.createElement('li');
+        let pageLink = document.createElement('a');
+        pageLink.innerText = i;
+        pageLink.addEventListener('click', e => {
+          updateReceivedData(dataType, Number(e.target.innerText));
+        })
+        pageLinkListItem.appendChild(pageLink);
+        pageList.appendChild(pageLinkListItem);
+      }
+    })
+  }
+}
+
+// Fetch single item data when a card is clicked.
+const fetchSingleItemData = (name) => {
+  const URL = `https://eldenring.fanapis.com/api/${currentDataType}?name=${name}`;
+  fetch(URL)
+    .then(res => res.json())
+    .then(data => singleData = data.data)
+    .then(err => console.log(err))
+}
+
+const renderDetailedData = () => {
+
+}
+
+shieldsButton.addEventListener('click', e => {
+  updateReceivedData(e.target.dataset.type);
+});
+
+weaponsButton.addEventListener('click', e => {
+  updateReceivedData(e.target.dataset.type);
+});
+
+npcsButton.addEventListener('click', e => {
+  updateReceivedData(e.target.dataset.type);
+});
+
+locationsButton.addEventListener('click', e => {
+  updateReceivedData(e.target.dataset.type);
+});
+
+// ashesOfWarButton.addEventListener('click', e => {
+//   updateReceivedData(e.target.dataset.type);
+// });
+
+
 searchBar.addEventListener('input', filterContent);
 
 

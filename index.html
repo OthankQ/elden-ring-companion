@@ -13,15 +13,22 @@
     <h1>Elden Ring Companion</h1>
     <div class="container">
         <div class="button-wrapper">
-            <button id="shieldsButton">Shields</button>
-            <button id="weaponsButton">Weapons</button>
-            <button id="npcsButton">NPCs</button>
-            <button id="locationsButton">Locations</button>
+            <button id="shieldsButton" data-type="shields">Shields</button>
+            <button id="weaponsButton" data-type="weapons">Weapons</button>
+            <button id="npcsButton" data-type="npcs">NPCs</button>
+            <button id="locationsButton" data-type="locations">Locations</button>
+            <!-- <button id="ashesOfWarButton" data-type="ashesofwar">Ashes of War</button> -->
+        </div>
+        <div class="sort-button-wrapper">
+
         </div>
         <div class="searchbar">
             <input type="text" name="searchbar" id="searchbar">
         </div>
         <div class="card-list"></div>
+        <div class="pages">
+            <ul class="page-list"></ul>
+        </div>
     </div>
 </body>
 </html>
